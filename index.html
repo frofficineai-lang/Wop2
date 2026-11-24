@@ -533,21 +533,7 @@ if(new URLSearchParams(location.search).get('mode')==='store-calendar')document.
   <div class="page-head"><div><h2>Dettaglio negozi</h2><p>FTE medio annuo, consegne settimanali dai file stock (XIBICM + XIBPCM) e pronostico di smaltimento ferie.</p></div><div class="actions"><button class="btn" id="storeTemplateExport" type="button">⬇ Modello residuo ferie</button><label class="btn">⬆ Importa file ferie HR<input type="file" id="storeFerieImport" accept=".xlsx,.XLSX" hidden></label><label class="btn">⬆ Importa residuo ferie<input type="file" id="storeTemplateImport" accept=".xlsx" hidden></label><label class="btn dark" id="deliveryImportLabel">Importa file stock<input type="file" id="deliveryImport" accept=".xlsx" multiple hidden></label><button class="btn primary" id="storeExcel" type="button">Esporta Excel</button></div></div>
   <div class="filters"><div class="field"><label>District manager</label><select id="storeDm"><option value="all">Tutti</option></select></div><div class="field"><label>Tipo</label><select id="storeTige"><option value="all">Tutti</option><option value="PRO">PRO</option><option value="OCE">OCE</option></select></div><div class="field"><label>Esito ferie</label><select id="storeStatus"><option value="all">Tutti</option><option value="red">Residuo a rischio</option><option value="yellow">Residuo ≤ 1 sett./FTE</option><option value="green">Smaltite</option><option value="noferie">Senza residuo ferie</option></select></div><div class="field grow"><label>Ricerca</label><input id="storeSearch" placeholder="Negozio, codice o DM…"></div></div>
   <div class="grid kpis" id="storeKpis"></div>
-  <div class="card panel"><div class="panel-head"><div><h3>Negozi</h3><small id="storeDeliveryInfo"></small></div></div>
-    <div class="table-wrap store-table-wrap"><table class="data-table store-table"><thead><tr>
-      <th><button class="sort-btn" data-store-sort="name">Negozio <span class="sort-arrow"></span></button></th>
-      <th><button class="sort-btn" data-store-sort="dm">DM <span class="sort-arrow"></span></button></th>
-      <th><button class="sort-btn" data-store-sort="fte">FTE medio annuo <span class="sort-arrow"></span></button></th>
-      <th><button class="sort-btn" data-store-sort="deliv">Consegne ult. sett. <span class="sort-arrow"></span></button></th>
-      <th><button class="sort-btn" data-store-sort="perfte">Pz/FTE <span class="sort-arrow"></span></button></th>
-      <th><button class="sort-btn" data-store-sort="total">Consegne storico <span class="sort-arrow"></span></button></th>
-      <th><button class="sort-btn" data-store-sort="toship">Da spedire <span class="sort-arrow"></span></button></th>
-      <th><button class="sort-btn" data-store-sort="ferie">Residuo ferie h <span class="sort-arrow"></span></button></th>
-      <th>Data rif.</th>
-      <th><button class="sort-btn" data-store-sort="cap">Smaltibili h <span class="sort-arrow"></span></button></th>
-      <th><button class="sort-btn" data-store-sort="forecast">Previsto h <span class="sort-arrow"></span></button></th>
-      <th>Esito</th><th></th></tr></thead><tbody id="storeRows"></tbody></table></div>
-    <div id="storeEmpty" class="empty" hidden>Nessun negozio corrisponde ai filtri.</div></div>
+  <div class="card panel"><div class="panel-head"><div><h3>Spaccato settimanale per distretto</h3><small>Per ogni distretto (DM) e settimana: pezzi spediti, ore per stoccarli, ferie smaltite, ore lavorate e incidenza delle ore di stoccaggio sulle ore lavorate (verde sotto 10%, arancio 10–20%, rosso oltre). Rispetta i filtri sopra.</small></div></div><div id="storeDistrictGrid"></div></div>
   <div class="card panel"><div class="panel-head"><div><h3>Tempo operativo per settimana: ferie e consegne</h3><small>Quanta parte delle ore dei negozi selezionati va in ferie e in ricevimento merce, settimana per settimana.</small></div></div><div id="storeTimePanel"></div></div>
   <div class="card panel"><div class="panel-head"><div><h3>Spaccato settimanale per negozio</h3><small>Per ogni negozio e settimana 2026: pezzi spediti (file stock XIBICM + XIBPCM, da giugno), ore per stoccarli (pezzi × 2 minuti a capo, valore modificabile nelle impostazioni sotto), ferie smaltite (file ferie HR, fino a settembre), ore lavorate (Snowflake) e incidenza delle ore di stoccaggio sulle ore lavorate (verde sotto 10%, arancio 10–20%, rosso oltre). Filtra per DM o cerca un negozio sopra.</small></div></div><div id="storeWeeklyGrid"></div></div>
   <div class="grid store-settings-grid">
@@ -562,6 +548,21 @@ if(new URLSearchParams(location.search).get('mode')==='store-calendar')document.
       <div style="margin-top:14px"><button class="btn primary" id="saveStoreSettings" type="button">Salva impostazioni</button></div></div>
     <div class="card legend-card"><h3>Istantanee consegne</h3><small class="store-help" style="margin:0 0 10px">Si conservano le ultime 60 settimane, con le due stagioni.</small><div id="deliverySnapshots" class="snapshot-list"></div></div>
   </div>
+  <div class="card panel" style="margin-top:18px"><div class="panel-head"><div><h3>Negozi</h3><small id="storeDeliveryInfo"></small></div></div>
+    <div class="table-wrap store-table-wrap"><table class="data-table store-table"><thead><tr>
+      <th><button class="sort-btn" data-store-sort="name">Negozio <span class="sort-arrow"></span></button></th>
+      <th><button class="sort-btn" data-store-sort="dm">DM <span class="sort-arrow"></span></button></th>
+      <th><button class="sort-btn" data-store-sort="fte">FTE medio annuo <span class="sort-arrow"></span></button></th>
+      <th><button class="sort-btn" data-store-sort="deliv">Consegne ult. sett. <span class="sort-arrow"></span></button></th>
+      <th><button class="sort-btn" data-store-sort="perfte">Pz/FTE <span class="sort-arrow"></span></button></th>
+      <th><button class="sort-btn" data-store-sort="total">Consegne storico <span class="sort-arrow"></span></button></th>
+      <th><button class="sort-btn" data-store-sort="toship">Da spedire <span class="sort-arrow"></span></button></th>
+      <th><button class="sort-btn" data-store-sort="ferie">Residuo ferie h <span class="sort-arrow"></span></button></th>
+      <th>Data rif.</th>
+      <th><button class="sort-btn" data-store-sort="cap">Smaltibili h <span class="sort-arrow"></span></button></th>
+      <th><button class="sort-btn" data-store-sort="forecast">Previsto h <span class="sort-arrow"></span></button></th>
+      <th>Esito</th><th></th></tr></thead><tbody id="storeRows"></tbody></table></div>
+    <div id="storeEmpty" class="empty" hidden>Nessun negozio corrisponde ai filtri.</div></div>
 </section>
 
 <section class="view" id="view-settings">
@@ -1494,9 +1495,21 @@ Stato: ${a.status||'—'}${a.notes?'\nNote: '+a.notes:''}`;for(let c=first;c<=la
     $('#storeEmpty').hidden=rows.length>0;
     $$('#storeRows [data-store-detail]').forEach(b=>b.onclick=()=>openStoreDetail(b.dataset.storeDetail));
     $$('#storeRows .store-input').forEach(inp=>inp.onchange=()=>updateStoreField(inp.closest('tr').dataset.code,inp.dataset.storeField,inp.value));
-    renderWeeklyDeliveries(rows);renderTimePanel(rows);renderStoreSettingsForm();renderDeliverySnapshotList();
+    renderWeeklyDeliveries(rows);renderWeeklyByDistrict(rows);renderTimePanel(rows);renderStoreSettingsForm();renderDeliverySnapshotList();
     const fs=$('#storeFerieStatus');if(fs){const fe=state.storeData.ferie;fs.textContent=fe?.source?`Ferie: ${fe.source} · ${Object.keys(fe.data).length} negozi · dati a fine ${monthNames[(fe.month||1)-1].toLowerCase()} ${fe.year}`:'Ferie per negozio non caricate.'}const fd=$('#storeFteStatus');if(fd){const ff=state.storeData.fteFile;fd.textContent=ff?`FTE medio ${ff.year}: ${Object.keys(ff.data||{}).length} negozi dal file ${ff.source} (importato il ${fmtD(ff.importedAt)}). Ha la precedenza sulle ore lavorate.`:'File FTE non caricato: FTE calcolato dalle ore lavorate.'}const rd=$('#storeHoursStatus');if(rd){const n=Object.keys(state.storeData.hours?.data||{}).length;rd.textContent=n?`Ore lavorate caricate: ${n} negozi (mensili${Object.keys(state.storeData.hours?.weekly||{}).length?' e settimanali':''}), estrazione Snowflake del ${fmtD(hoursExtractedAt())}.`:'Ore lavorate non ancora caricate: importa il file ore da Snowflake.'}
   }
+  function renderWeeklyByDistrict(rows){const el=$('#storeDistrictGrid');if(!el)return;const year=fteYear();
+    const per=rows.map(r=>({r,b:new Map(storeWeeklyBreakdown(r.s).map(x=>[x.week,x]))})),weeks=[...new Set(per.flatMap(p=>[...p.b.keys()]))].filter(k=>k.startsWith(String(year))).sort();
+    if(!weeks.length){el.innerHTML='<p class="store-muted">Nessun dato settimanale: importa ore lavorate, file ferie e file stock.</p>';return}
+    const metrics=[['pz','Pezzi spediti',v=>fmtH(v)],['stock','Ore stoccaggio h',v=>fmt(v,1)],['ferie','Ferie smaltite h',v=>fmtH(v)],['hours','Ore lavorate h',v=>fmtH(v)],['stockShare','Incidenza stoccaggio',v=>`<span class="tag ${v>=.2?'red':v>=.1?'orange':'green'}">${fmt(v*100,1)}%</span>`]];
+    const agg=list=>{const m=new Map(weeks.map(w=>{const o={};metrics.forEach(([k])=>{if(k==='stockShare')return;let t=0,any=false;list.forEach(p=>{const x=p.b.get(w);const v=x?x[k]:null;if(v!=null){t+=v*(k==='pz'||k==='stock'?(x.span||1):1);any=true}});o[k]=any?t:null});let st=0,hh=0;list.forEach(p=>{const x=p.b.get(w);if(x&&x.stock!=null&&x.hours){st+=x.stock*(x.span||1);hh+=x.hours}});o.stockShare=hh&&st?st/hh:null;o._st=st;o._hh=hh;return[w,o]}));return m};
+    const block=(name,sub,map,cls)=>metrics.map(([k,label,f],i)=>`<tr class="${cls||''} ${i===0?'store-block-start':''}">${i===0?`<td class="sticky-col" rowspan="${metrics.length}"><b>${esc(name)}</b>${sub?`<br><small class="store-muted">${esc(sub)}</small>`:''}</td>`:''}<td class="sticky-col2 metric-${k}">${label}</td>${weeks.map(w=>{const v=map.get(w)?.[k];return `<td class="num metric-${k}">${v==null?'<span class="store-muted">—</span>':f(v)}</td>`}).join('')}<td class="num metric-${k}"><b>${(()=>{if(k==='stockShare'){let st=0,hh=0;weeks.forEach(w=>{const o=map.get(w);st+=o._st;hh+=o._hh});return hh&&st?f(st/hh):'—'}let t=0,any=false;weeks.forEach(w=>{const v=map.get(w)?.[k];if(v!=null){t+=v;any=true}});return any?(k==='stock'?fmt(t,1):fmtH(t)):'—'})()}</b></td></tr>`).join('');
+    const groups=new Map();per.forEach(p=>{const k=p.r.s.dmName||'Senza DM';if(!groups.has(k))groups.set(k,[]);groups.get(k).push(p)});
+    const list=[...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0]));
+    el.innerHTML=`<div class="table-wrap store-week-wrap" id="storeDistrictScroll"><table class="data-table compact store-week-table"><thead><tr><th class="sticky-col">Distretto</th><th class="sticky-col2">Dato</th>${weeks.map(w=>`<th class="num">${w.slice(5)}</th>`).join('')}<th class="num">Totale</th></tr></thead><tbody>
+      ${block('Totale selezione',`${rows.length} negozi · ${list.length} distretti`,agg(per),'store-week-total')}
+      ${list.map(([n,ps])=>block(n,`${ps.length} negozi`,agg(ps))).join('')}</tbody></table></div>`;
+    const sc=$('#storeDistrictScroll');if(sc)sc.scrollLeft=sc.scrollWidth}
   function renderWeeklyDeliveries(rows){const el=$('#storeWeeklyGrid');if(!el)return;const year=fteYear();
     const per=rows.map(r=>({r,b:new Map(storeWeeklyBreakdown(r.s).map(x=>[x.week,x]))})),weeks=[...new Set(per.flatMap(p=>[...p.b.keys()]))].filter(k=>k.startsWith(String(year))).sort();
     if(!weeks.length){el.innerHTML='<p class="store-muted">Nessun dato settimanale: importa ore lavorate, file ferie e file stock.</p>';return}
