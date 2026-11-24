@@ -1414,7 +1414,7 @@ Stato: ${a.status||'—'}${a.notes?'\nNote: '+a.notes:''}`;for(let c=first;c<=la
     const dl=sd.deliveries&&typeof sd.deliveries==='object'?sd.deliveries:{};Object.keys(dl).forEach(k=>{const s=dl[k];if(s&&s.stores&&!s.seasons)dl[k]={seasons:{AI:{date:s.date,file:s.file,stores:s.stores}}}});sd.deliveries=dl;
     sd.hours=sd.hours&&typeof sd.hours==='object'&&sd.hours.data?sd.hours:{extractedAt:null,data:{}};if(!sd.hours.weekly)sd.hours.weekly={};sd.ferie=sd.ferie&&typeof sd.ferie==='object'&&sd.ferie.data?sd.ferie:{source:null,data:{}};return sd}
   state.storeData=normalizeStoreData(state.storeData);
-  function storeList(){return STORE_REGISTRY.stores||[]}
+  function storeList(){return (STORE_REGISTRY.stores||[]).filter(s=>s.tige!=='OCE')}
   function storeByCode(code){return storeList().find(s=>s.code===code)}
   function storeRec(code){return state.storeData.stores[code]||{}}
   function storeSettings(){return state.storeData.settings}
