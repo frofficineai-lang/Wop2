@@ -542,7 +542,6 @@ if(new URLSearchParams(location.search).get('mode')==='store-calendar')document.
       <th><button class="sort-btn" data-store-sort="name">Negozio <span class="sort-arrow"></span></button></th>
       <th><button class="sort-btn" data-store-sort="dm">DM <span class="sort-arrow"></span></button></th>
       <th><button class="sort-btn" data-store-sort="fte">FTE medio annuo <span class="sort-arrow"></span></button></th>
-      <th><button class="sort-btn" data-store-sort="deliv">Consegne ult. sett. <span class="sort-arrow"></span></button></th>
       <th><button class="sort-btn" data-store-sort="perfte" title="Consegne storico ÷ FTE medio annuo. Colore: confronto con la media di rete (soglie in Regole e dati → FTE e consegne)">Pz/FTE storico <span class="sort-arrow"></span></button></th>
       <th><button class="sort-btn" data-store-sort="total">Consegne storico <span class="sort-arrow"></span></button></th>
       <th><button class="sort-btn" data-store-sort="toship">Da spedire <span class="sort-arrow"></span></button></th>
@@ -1494,7 +1493,6 @@ Stato: ${a.status||'—'}${a.notes?'\nNote: '+a.notes:''}`;for(let c=first;c<=la
     $$('#view-stores [data-store-sort]').forEach(b=>{const on=b.dataset.storeSort===k.key;b.classList.toggle('active',on);b.querySelector('.sort-arrow').textContent=on?(k.dir==='asc'?'▲':'▼'):''});
     const pfAvg=perFteNetworkAvg();{const lg=$('#storePerFteLegend'),st=storeSettings();if(lg)lg.innerHTML=pfAvg?`Pz/FTE storico: media di rete ${fmtH(pfAvg)} pz/FTE · <span class="tag green">fino a +${st.perFteAlertPct}%</span> <span class="tag orange">da +${st.perFteAlertPct}%</span> <span class="tag red">da +${st.perFteCriticalPct}%</span> sopra la media`:''}$('#storeRows').innerHTML=rows.map(({s,f,del,fer,rec})=>{const cur=del&&del.week===lastWeek;return `<tr data-code="${s.code}"><td><div class="store-name"><b>${esc(s.name)}</b><small>${s.code} · <span class="tag mini-tag">${s.tige}</span></small></div></td><td>${esc(s.dmName)}</td>
       <td class="num">${f.used===null?'—':fmt(f.used,1)}</td>
-      <td class="num">${cur&&del.weekly!=null?fmtH(del.weekly):'—'}${cur&&del.reset?' <span title="Cambio stagione: conteggiato lo spedito della nuova stagione">↺</span>':''}</td>
       <td class="num">${del?.total!=null&&f.used?(()=>{const v=del.total/f.used,pct=pfAvg?(v/pfAvg-1)*100:null;return`<span class="tag ${perFteTag(v,pfAvg)}" title="${pct===null?'':`${pct>=0?'+':''}${fmt(pct,0)}% rispetto alla media di rete (${fmtH(pfAvg)} pz/FTE)`}">${fmtH(v)}</span>`})():'—'}</td>
       <td class="num">${del?.total==null?'—':fmtH(del.total)}</td>
       <td class="num">${del?fmtH(del.toShip):'—'}</td>
